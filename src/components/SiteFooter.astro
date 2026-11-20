@@ -1,0 +1,55 @@
+---
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer no-print">
+  <div class="wrap foot">
+    <p>© {year} {site.name}</p>
+    <ul aria-label="Bağlantılar">
+      <li><a href={site.links.github} rel="me">GitHub</a></li>
+      <li><a href={site.links.linkedin} rel="me">LinkedIn</a></li>
+      <li><a href={`mailto:${site.email}`}>E-posta</a></li>
+      {site.personalSite && <li><a href={site.personalSite} rel="me">Kişisel site</a></li>}
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-5);
+    padding-block: var(--space-5);
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: var(--space-2);
+    color: var(--muted);
+  }
+
+  a:hover {
+    color: var(--ink);
+  }
+</style>
