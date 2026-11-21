@@ -36,6 +36,7 @@ jobs:
             --exclude-path dist/_astro
             --exclude linkedin\.com
             --exclude onrender\.com
+            --exclude ^https://rose-omer\.github\.io/
             --max-retries 2
             'dist/**/*.html'
           fail: true
