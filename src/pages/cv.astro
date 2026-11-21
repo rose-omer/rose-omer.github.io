@@ -1,0 +1,326 @@
+---
+import Base from '../layouts/Base.astro';
+import { existsSync, statSync } from 'node:fs';
+import { site, experience, education, skills, certificates } from '../data/site';
+
+// PDF `npm run cv:pdf` ile bu sayfadan üretilir. Dosya yoksa bağlantı çıkmaz.
+const pdfPath = 'public/omer-kose-cv.pdf';
+const pdfKb = existsSync(pdfPath) ? Math.round(statSync(pdfPath).size / 1024) : 0;
+---
+
+<Base title="CV" description="Ömer Faruk Köse: deneyim, eğitim, yetenekler ve sertifikalar. Tek sayfa özgeçmiş.">
+  <div class="wrap page">
+    <header class="head">
+      <div>
+        <h1>{site.name}</h1>
+        <p class="role">{site.role}</p>
+      </div>
+      <ul class="contact" aria-label="İletişim">
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><a href={site.links.github}>github.com/rose-omer</a></li>
+        <li><a href={site.links.linkedin}>LinkedIn</a></li>
+        <li>{site.location}</li>
+      </ul>
+      {
+        pdfKb > 0 && (
+          <p class="download no-print">
+            <a class="btn" href="/omer-kose-cv.pdf" download="omer-kose-cv.pdf">
+              PDF indir
+            </a>
+            <span class="file-meta">A4 · 1 sayfa · {pdfKb} KB</span>
+          </p>
+        )
+      }
+    </header>
+
+    <section class="block" aria-labelledby="deneyim">
+      <h2 id="deneyim">Deneyim</h2>
+      <ol class="entries">
+        {
+          experience.map((e) => (
+            <li class="entry">
+              <p class="when">{e.period}</p>
+              <div>
+                <h3>
+                  {e.role}, <span class="org">{e.org}</span>
+                </h3>
+                <p>{e.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="block" aria-labelledby="egitim">
+      <h2 id="egitim">Eğitim</h2>
+      <ul class="entries">
+        {
+          education.map((e) => (
+            <li class="entry">
+              <p class="when">{e.period}</p>
+              <div>
+                <h3>
+                  {e.degree}, <span class="org">{e.org}</span>
+                </h3>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="block" aria-labelledby="yetenek">
+      <h2 id="yetenek">Yetenekler</h2>
+      <dl class="skills">
+        {
+          skills.map((s) => (
+            <div>
+              <dt>{s.group}</dt>
+              <dd>{s.items.join(', ')}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="block" aria-labelledby="sertifika">
+      <h2 id="sertifika">Sertifikalar</h2>
+      <ul class="plain">
+        {
+          certificates.map((c) => (
+            <li>
+              {c.title} <span class="org">({c.issuer})</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <p class="more no-print">Projelerin ayrıntısı <a href="/projeler/">Projeler</a> sayfasında.</p>
+  </div>
+</Base>
+
+<style>
+  .page {
+    max-width: 56rem;
+    padding-block: var(--space-8);
+  }
+
+  .head {
+    display: grid;
+    gap: var(--space-5);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .head h1 {
+    font-size: var(--step-3);
+    font-stretch: 82%;
+  }
+
+  .role {
+    margin-top: var(--space-2);
+    color: var(--muted);
+    font-size: var(--step-1);
+  }
+
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-5);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: var(--step--1);
+  }
+
+  .contact a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .contact li:last-child {
+    display: inline-flex;
+    align-items: center;
+    color: var(--muted);
+  }
+
+  .download {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .file-meta {
+    color: var(--muted);
+    font: 400 var(--step--1) / 1 var(--font-mono);
+  }
+
+  .block {
+    padding-block: var(--space-6);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block h2 {
+    font-size: var(--step-2);
+    margin-bottom: var(--space-5);
+  }
+
+  .entries,
+  .plain {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .plain {
+    gap: var(--space-2);
+  }
+
+  .entry {
+    display: grid;
+    gap: var(--space-1) var(--space-6);
+  }
+
+  @media (min-width: 40rem) {
+    .entry {
+      grid-template-columns: 13rem minmax(0, 1fr);
+    }
+  }
+
+  .when {
+    color: var(--muted);
+    font: 400 var(--step--1) / 1.6 var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .entry h3 {
+    font-size: var(--step-0);
+    font-family: var(--font-body);
+    font-weight: 650;
+    line-height: 1.4;
+    margin-bottom: var(--space-1);
+  }
+
+  .entry p:not(.when) {
+    color: var(--muted);
+    max-width: 60ch;
+  }
+
+  .org {
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .skills {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+
+  .skills div {
+    display: grid;
+    gap: var(--space-1) var(--space-6);
+  }
+
+  @media (min-width: 40rem) {
+    .skills div {
+      grid-template-columns: 13rem minmax(0, 1fr);
+    }
+  }
+
+  .skills dt {
+    color: var(--muted);
+    font-size: var(--step--1);
+    line-height: 1.8;
+  }
+
+  .skills dd {
+    margin: 0;
+  }
+
+  .more {
+    margin-top: var(--space-6);
+    color: var(--muted);
+  }
+
+  /* Yazdırma ve `npm run cv:pdf`: tek A4 sayfa. */
+  @page {
+    size: A4;
+    margin: 14mm 16mm;
+  }
+
+  @media print {
+    .page {
+      max-width: none;
+      padding-block: 0;
+      font-size: 9.5pt;
+      line-height: 1.45;
+    }
+
+    .head {
+      gap: 4pt;
+      padding-bottom: 8pt;
+    }
+
+    .head h1 {
+      font-size: 24pt;
+      line-height: 1.15;
+    }
+
+    .role {
+      margin-top: 2pt;
+      font-size: 12pt;
+    }
+
+    .contact a,
+    .contact li:last-child {
+      min-height: 0;
+    }
+
+    .block {
+      padding-block: 8pt;
+      break-inside: avoid;
+    }
+
+    .block h2 {
+      font-size: 13pt;
+      margin-bottom: 6pt;
+    }
+
+    .entries {
+      gap: 6pt;
+    }
+
+    .plain,
+    .skills {
+      gap: 2pt;
+    }
+
+    .entry,
+    .skills div {
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+      gap: 0 12pt;
+    }
+
+    .entry h3 {
+      font-size: 10pt;
+      margin-bottom: 0;
+    }
+
+    .entry p:not(.when) {
+      max-width: none;
+    }
+
+    .when,
+    .skills dt {
+      font-size: 8.5pt;
+      line-height: 1.6;
+    }
+  }
+</style>

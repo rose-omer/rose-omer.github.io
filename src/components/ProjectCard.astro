@@ -1,0 +1,149 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectCover from './ProjectCover.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  headingLevel?: 2 | 3;
+}
+
+const { project, headingLevel = 3 } = Astro.props;
+const p = project.data;
+const href = `/projeler/${project.id}/`;
+const top = p.metrics[0];
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+---
+
+<article class="card" data-tags={p.tags.join('|')}>
+  <div class="cover">
+    <ProjectCover cover={p.cover} motif={p.motif} />
+  </div>
+  <div class="body">
+    <Heading class="title">
+      <a href={href} class="stretched">{p.title}</a>
+    </Heading>
+    <p class="summary">{p.summary}</p>
+    {
+      top && (
+        <p class="metric">
+          <span>{top.label}</span>
+          <strong>{top.value}</strong>
+        </p>
+      )
+    }
+    <ul class="chip-list" aria-label="Etiketler">
+      {p.tags.map((t) => <li class="chip">{t}</li>)}
+    </ul>
+    <p class="links">
+      <a href={p.repo}>Kod<span class="visually-hidden">: {p.title} GitHub deposu</span></a>
+      {
+        p.demo && (
+          <a href={p.demo}>
+            Demo<span class="visually-hidden">: {p.title}</span>
+          </a>
+        )
+      }
+      {p.demo && p.demoNote && <span class="note">{p.demoNote}</span>}
+    </p>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  /* Üzerine gelince ya da odaklanınca kapağı tespit kutusu çevreler. */
+  .cover {
+    position: relative;
+    order: -1;
+  }
+
+  .cover::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border: 1.5px solid var(--box);
+    border-radius: calc(var(--radius) + 2px);
+    opacity: 0;
+    transform: scale(1.015);
+    transition:
+      opacity 160ms var(--ease-out),
+      transform 220ms var(--ease-out);
+    pointer-events: none;
+  }
+
+  .card:hover .cover::after,
+  .card:focus-within .cover::after {
+    opacity: 1;
+    transform: none;
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    flex: 1;
+  }
+
+  .title a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .card:hover .title a {
+    text-decoration: underline;
+    text-decoration-color: var(--box);
+    text-decoration-thickness: 2px;
+  }
+
+  /* Kartın tamamı vaka sayfasına gider; iç bağlantılar ayrıca odaklanır. */
+  .stretched::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .stretched:focus-visible {
+    outline: none;
+  }
+
+  .card:has(.stretched:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 8px;
+    border-radius: var(--radius);
+  }
+
+  .summary {
+    color: var(--muted);
+  }
+
+  .metric {
+    align-self: flex-start;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--space-4);
+    margin-top: auto;
+  }
+
+  .links a {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+  }
+
+  .note {
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+</style>

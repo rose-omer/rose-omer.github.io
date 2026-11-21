@@ -1,0 +1,374 @@
+---
+import { render } from 'astro:content';
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Compare from '../../components/Compare.astro';
+import ProjectCover from '../../components/ProjectCover.astro';
+import { getProjects, type Project } from '../../lib/projects';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+interface Props {
+  project: Project;
+  next: Project;
+}
+
+const { project, next } = Astro.props;
+const p = project.data;
+const { Content } = await render(project);
+---
+
+<Base title={p.title} description={p.summary} ogImage={`/og/${project.id}.png`} type="article">
+  <div class="wrap page">
+    <nav class="crumbs no-print" aria-label="Konum">
+      <a href="/projeler/">Projeler</a>
+    </nav>
+
+    <header class="head">
+      <h1>{p.title}</h1>
+      <p class="lede summary">{p.summary}</p>
+      <ul class="chip-list" aria-label="Etiketler">
+        {p.tags.map((t) => <li class="chip"><a href={`/projeler/?etiket=${encodeURIComponent(t)}`}>{t}</a></li>)}
+      </ul>
+    </header>
+
+    {
+      p.cover && (
+        <div class="hero-cover">
+          <ProjectCover cover={p.cover} alt={p.coverAlt} motif={p.motif} eager sizes="(min-width: 72rem) 67rem, 94vw" />
+        </div>
+      )
+    }
+
+    <div class="layout">
+      <aside class="facts" aria-labelledby="ozet">
+        <h2 id="ozet" class="facts-title">Özet</h2>
+        <dl class="facts-list">
+          <div><dt>Rol</dt><dd>{p.role}</dd></div>
+          <div><dt>Yıl</dt><dd>{p.year}</dd></div>
+          <div><dt>Yığın</dt><dd>{p.stack.join(', ')}</dd></div>
+        </dl>
+
+        {
+          p.metrics.length > 0 && (
+            <table class="metrics">
+              <caption>Metrikler</caption>
+              <tbody>
+                {p.metrics.map((m) => (
+                  <tr>
+                    <th scope="row">
+                      {m.label}
+                      {m.note && <span class="mnote">{m.note}</span>}
+                    </th>
+                    <td>{m.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )
+        }
+
+        <div class="facts-links">
+          <a class="btn" href={p.repo}>Kodu GitHub'da aç</a>
+          {p.demo && <a class="btn btn--line" href={p.demo}>Canlı demoyu aç</a>}
+          {p.demo && p.demoNote && <p class="note">{p.demoNote}</p>}
+          {!p.demo && <p class="note">Canlı demo yok. Kurulum adımları ve ekranlar depoda.</p>}
+        </div>
+      </aside>
+
+      <article class="prose">
+        <Content />
+
+        {
+          p.compare && (
+            <section aria-labelledby="karsilastirma">
+              <h2 id="karsilastirma">Görsel karşılaştırma</h2>
+              <p class="hint no-print">Kaydırıcıyı sürükle ya da odaklayıp ok tuşlarını kullan.</p>
+              <Compare {...p.compare} />
+            </section>
+          )
+        }
+
+        {
+          p.gallery.length > 0 && (
+            <section aria-labelledby="ekranlar">
+              <h2 id="ekranlar">Ekranlar</h2>
+              {p.gallery.map((g) => (
+                <figure class="shot">
+                  <Picture
+                    src={g.src}
+                    alt={g.alt}
+                    formats={['avif', 'webp']}
+                    widths={[640, 1000, 1400]}
+                    sizes="(min-width: 60rem) 44rem, 92vw"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <figcaption>{g.caption}</figcaption>
+                </figure>
+              ))}
+            </section>
+          )
+        }
+
+        {
+          p.learned.length > 0 && (
+            <section aria-labelledby="ogrendiklerim">
+              <h2 id="ogrendiklerim">Öğrendiklerim</h2>
+              <ul>
+                {p.learned.map((l) => (
+                  <li>{l}</li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+      </article>
+    </div>
+
+    <nav class="next no-print" aria-label="Sonraki proje">
+      <span class="next-label">Sonraki proje</span>
+      <a href={`/projeler/${next.id}/`}>{next.data.title}</a>
+    </nav>
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-block: var(--space-6) var(--space-8);
+  }
+
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+
+  .crumbs a::before {
+    content: '';
+    width: 0.45em;
+    height: 0.45em;
+    margin-right: 0.5em;
+    border-left: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  .head {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .summary {
+    font-size: var(--step-1);
+    line-height: 1.45;
+  }
+
+  .chip a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .chip:has(a:hover) {
+    border-color: var(--muted);
+    color: var(--ink);
+  }
+
+  .chip a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: -8px;
+  }
+
+  .hero-cover {
+    margin-top: var(--space-7);
+  }
+
+  .hero-cover :global(.frame) {
+    border: 1px solid var(--line);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+    margin-top: var(--space-7);
+  }
+
+  /* Masaüstünde içerik solda, özet kutusu sağda yapışkan; mobilde özet üstte. */
+  @media (min-width: 60rem) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .facts {
+      order: 2;
+      position: sticky;
+      top: var(--space-5);
+    }
+  }
+
+  .facts {
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .facts-title {
+    font-size: var(--step-1);
+  }
+
+  .facts-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+
+  .facts-list dt {
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+
+  .facts-list dd {
+    margin: 0;
+  }
+
+  .metrics {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .metrics caption {
+    text-align: left;
+    color: var(--muted);
+    font-size: var(--step--1);
+    padding-bottom: var(--space-2);
+  }
+
+  .metrics th,
+  .metrics td {
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .metrics th {
+    text-align: left;
+    font-weight: 600;
+    padding-right: var(--space-3);
+  }
+
+  .metrics td {
+    text-align: right;
+    font: 700 var(--step-1) / 1.2 var(--font-mono);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .mnote {
+    display: block;
+    color: var(--muted);
+    font-weight: 400;
+    font-size: var(--step--1);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  .facts-links {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .note {
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+
+  .prose {
+    max-width: var(--measure);
+    min-width: 0;
+  }
+
+  .prose :global(h2) {
+    font-size: var(--step-2);
+    margin-top: var(--space-7);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose > :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .prose :global(p + p),
+  .prose :global(p + ul),
+  .prose :global(ul + p) {
+    margin-top: var(--space-4);
+  }
+
+  .prose :global(ul) {
+    margin: 0;
+    padding-left: 1.2em;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .prose :global(li::marker) {
+    color: var(--box);
+  }
+
+  .hint {
+    color: var(--muted);
+    font-size: var(--step--1);
+    margin-bottom: var(--space-4);
+  }
+
+  .shot {
+    margin: 0 0 var(--space-6);
+  }
+
+  .shot :global(img) {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .shot figcaption {
+    margin-top: var(--space-2);
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+
+  .next {
+    display: grid;
+    gap: var(--space-1);
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+
+  .next-label {
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+
+  .next a {
+    justify-self: start;
+    font: 680 var(--step-2) / 1.2 var(--font-display);
+    font-stretch: 86%;
+  }
+</style>

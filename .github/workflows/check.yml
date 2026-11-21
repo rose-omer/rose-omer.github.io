@@ -1,0 +1,42 @@
+# PR'larda ve main dışı push'larda: tip denetimi, derleme, testler, bağlantı denetimi.
+name: Denetim
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Bağımlılıkları kur
+        run: npm ci
+      - name: Tip ve şablon denetimi
+        run: npx astro check
+      - name: Derle
+        run: npm run build
+      - name: Testler (dist üzerinde)
+        run: npm test
+      - name: Dış bağlantı denetimi
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --root-dir ${{ github.workspace }}/dist
+            --exclude-path dist/_astro
+            --exclude linkedin\.com
+            --exclude onrender\.com
+            --exclude ^https://rose-omer\.github\.io/
+            --max-retries 2
+            'dist/**/*.html'
+          fail: true

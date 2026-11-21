@@ -1,0 +1,105 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { site } from '../data/site';
+
+const path = Astro.url.pathname;
+const items = [
+  { href: '/projeler/', label: 'Projeler' },
+  { href: '/cv/', label: 'CV' },
+];
+---
+
+<header class="site-header no-print">
+  <div class="wrap bar">
+    <a class="brand" href="/" aria-label={`${site.name}, ana sayfa`}>
+      <svg class="brand-mark" viewBox="0 0 20 20" aria-hidden="true">
+        <path d="M1 6V1h5M14 1h5v5M19 14v5h-5M6 19H1v-5" fill="none" stroke="currentColor" stroke-width="2" />
+        <circle cx="10" cy="10" r="2.5" fill="currentColor" />
+      </svg>
+      <span>{site.shortName}</span>
+    </a>
+    <nav aria-label="Ana gezinme">
+      <ul>
+        {
+          items.map((item) => (
+            <li>
+              <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li><ThemeToggle /></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: 4rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    color: var(--ink);
+    font: 680 var(--step-0) / 1 var(--font-display);
+    font-stretch: 86%;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .brand-mark {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--box);
+  }
+
+  ul {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 550;
+  }
+
+  nav a:hover {
+    color: var(--ink);
+  }
+
+  nav a[aria-current='page'] {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--box);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.45em;
+  }
+
+  @media (max-width: 380px) {
+    nav a {
+      padding: 0 var(--space-2);
+    }
+  }
+</style>

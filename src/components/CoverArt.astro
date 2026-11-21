@@ -1,0 +1,143 @@
+---
+/**
+ * Ekran görüntüsü olmayan proje için çizilmiş kapak. Gerçek çıktı taklidi
+ * değildir: projenin işini (tespit, sınıflandırma, metin, arayüz, akış)
+ * sınırlayıcı kutu motifiyle gösteren süsleme görselidir; aria-hidden.
+ */
+import type { MOTIFS } from '../content.config';
+
+interface Props {
+  motif: (typeof MOTIFS)[number];
+}
+
+const { motif } = Astro.props;
+const label: Record<Props['motif'], string> = {
+  tespit: 'engel',
+  siniflandirma: 'lezyon',
+  metin: 'şüpheli',
+  arayuz: 'bileşen',
+  akis: 'an',
+};
+const anchors: Record<Props['motif'], [number, number]> = {
+  tespit: [80, 50],
+  siniflandirma: [162, 46],
+  metin: [34, 73],
+  arayuz: [106, 52],
+  akis: [160, 52],
+};
+const [ax, ay] = anchors[motif];
+const tag = label[motif];
+const grid = Array.from({ length: 15 }, (_, i) => (i + 1) * 20);
+---
+
+<svg class="cover-art" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+  <rect width="320" height="180" class="ca-bg" />
+  <g class="ca-grid">
+    {grid.map((x) => <line x1={x} y1="0" x2={x} y2="180" />)}
+    {grid.slice(0, 8).map((y) => <line x1="0" y1={y} x2="320" y2={y} />)}
+  </g>
+
+  {
+    motif === 'tespit' && (
+      <g>
+        <path class="ca-shape" d="M0 150 L320 128 L320 180 L0 180Z" />
+        <rect class="ca-shape" x="196" y="58" width="16" height="78" rx="2" />
+        <circle class="ca-shape" cx="104" cy="70" r="13" />
+        <rect class="ca-shape" x="88" y="86" width="32" height="56" rx="10" />
+        <rect class="ca-box" x="80" y="50" width="48" height="98" />
+        <rect class="ca-box" x="188" y="50" width="32" height="92" />
+      </g>
+    )
+  }
+  {
+    motif === 'siniflandirma' && (
+      <g>
+        {[0, 1, 2, 3].map((i) => (
+          <g transform={`translate(${44 + i * 62} 52)`}>
+            <rect class="ca-tile" width="52" height="52" rx="2" />
+            <ellipse class="ca-shape" cx="26" cy="27" rx={12 + (i % 2) * 5} ry={10 + ((i + 1) % 2) * 4} />
+          </g>
+        ))}
+        <rect class="ca-box" x="162" y="46" width="64" height="64" />
+      </g>
+    )
+  }
+  {
+    motif === 'metin' && (
+      <g>
+        {[44, 62, 80, 98, 116, 134].map((y, i) => (
+          <rect class="ca-shape" x="40" y={y} width={[210, 236, 180, 224, 150, 200][i]} height="7" rx="3.5" />
+        ))}
+        <rect class="ca-box" x="34" y="73" width="122" height="21" />
+      </g>
+    )
+  }
+  {
+    motif === 'arayuz' && (
+      <g>
+        <rect class="ca-tile" x="36" y="30" width="248" height="126" rx="3" />
+        <rect class="ca-shape" x="36" y="30" width="248" height="16" rx="3" />
+        <rect class="ca-shape" x="48" y="58" width="52" height="86" rx="2" />
+        <rect class="ca-shape" x="112" y="58" width="78" height="40" rx="2" />
+        <rect class="ca-shape" x="198" y="58" width="74" height="40" rx="2" />
+        <rect class="ca-shape" x="112" y="106" width="160" height="38" rx="2" />
+        <rect class="ca-box" x="106" y="52" width="90" height="52" />
+      </g>
+    )
+  }
+  {
+    motif === 'akis' && (
+      <g>
+        {Array.from({ length: 12 }, (_, i) => (
+          <rect class="ca-shape" x={30 + i * 22} y={110 - ((i * 37) % 50)} width="14" height={((i * 37) % 50) + 20} rx="2" />
+        ))}
+        <rect class="ca-box" x="160" y="52" width="66" height="84" />
+      </g>
+    )
+  }
+
+  <g class="ca-tag">
+    <rect x={ax} y={ay - 14} width={tag.length * 6.6 + 10} height="14" />
+    <text x={ax + 5} y={ay - 4}>{tag}</text>
+  </g>
+</svg>
+
+<style>
+  .cover-art {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ca-bg {
+    fill: var(--sunk);
+  }
+
+  .ca-grid line {
+    stroke: var(--line);
+    stroke-width: 0.5;
+  }
+
+  .ca-shape {
+    fill: color-mix(in oklab, var(--muted) 30%, var(--sunk));
+  }
+
+  .ca-tile {
+    fill: var(--surface);
+    stroke: var(--line);
+  }
+
+  .ca-box {
+    fill: none;
+    stroke: var(--box);
+    stroke-width: 1.5;
+  }
+
+  .ca-tag rect {
+    fill: var(--accent);
+  }
+
+  .ca-tag text {
+    fill: var(--accent-ink);
+    font: 600 10px var(--font-mono);
+  }
+</style>
