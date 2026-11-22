@@ -1,28 +1,25 @@
 {
-  "name": "rose-omer-portfolyo",
+  "name": "devportfolio-pro",
   "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "version": "1.0.0",
-  "engines": {
-    "node": ">=22.23.4"
-  },
   "scripts": {
-    "dev": "astro dev --port 8100",
-    "build": "astro build",
-    "preview": "astro preview --port 8100",
-    "check": "astro check",
-    "test": "node --test tests/*.test.mjs",
-    "verify": "npm run check && npm run build && npm test",
-    "cv:pdf": "node scripts/cv-pdf.mjs"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@astrojs/sitemap": "3.7.6",
-    "@fontsource-variable/archivo": "5.3.0",
-    "astro": "7.4.13",
-    "sharp": "0.35.5"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@google/genai": "^1.30.0",
+    "lucide-react": "^0.555.0",
+    "react-router-dom": "^7.9.6"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.12",
-    "typescript": "6.0.3"
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
   }
 }
