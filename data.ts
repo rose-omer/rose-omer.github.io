@@ -28,6 +28,9 @@ export const portfolioData: ProfileData = {
     { name: "Tensorflow", level: 85, category: "Framework" },
     { name: "Flask", level: 80, category: "Framework" },
     { name: "Django", level: 75, category: "Framework" },
+    { name: "PyTorch", level: 85, category: "Framework" },
+    { name: "FastAPI", level: 85, category: "Framework" },
+    { name: "React", level: 80, category: "Framework" },
     // Tanıdık Kütüphane
     { name: "OpenCV", level: 90, category: "Kütüphane" },
     { name: "Pandas", level: 85, category: "Kütüphane" },
@@ -35,6 +38,9 @@ export const portfolioData: ProfileData = {
     { name: "Matplotlib", level: 80, category: "Kütüphane" },
     { name: "PyQT", level: 75, category: "Kütüphane" },
     { name: "Docker", level: 70, category: "Araçlar" },
+    { name: "PostgreSQL", level: 85, category: "Araçlar" },
+    { name: "TensorRT", level: 75, category: "Araçlar" },
+    { name: "Linux", level: 75, category: "Araçlar" },
     { name: "YOLO", level: 85, category: "Kütüphane" },
     { name: "MediaPipe", level: 80, category: "Kütüphane" },
   ],
@@ -123,6 +129,23 @@ export const portfolioData: ProfileData = {
         "Kutu ve renk paleti algılama",
         "Masaüstü, tablet ve mobil önizleme",
         "Sürüm geçmişi, fark ve ZIP indirme"
+      ]
+    },
+    {
+      id: "biz-ikimiz",
+      title: "Biz İkimiz",
+      shortDescription: "Sevgilimle ikimiz için yazdığım uygulama: gün sayacı, sohbet, anılar, sanal yavru ve 19 oyun.",
+      fullDescription: "İki kişilik, ücretsiz bir uygulama. Statik site ve Supabase ile çalışır; telefona PWA ya da Android APK olarak kurulur. Her cihaz odaya onayla girer. Sohbet, anılar, mektuplar ve özel günler ikisi arasında anlık eşitlenir. Birlikte bakılan sanal bir yavru ve iki kişilik 19 oyun içerir.",
+      technologies: ["JavaScript", "Supabase", "PWA", "Capacitor", "Firebase"],
+      imageUrl: "/projects/biz-ikimiz.png",
+      githubUrl: "https://github.com/rose-omer/bizim-oyunlar",
+      liveUrl: "https://rose-omer.github.io/bizim-oyunlar/",
+      category: "Web",
+      features: [
+        "Fotoğraflı ve sesli mesajlaşma, tepki, görüldü bilgisi",
+        "Sanal yavru: ikiniz de bakınca büyür",
+        "19 iki kişilik oyun: tavla, satranç, pişti, amiral battı ve diğerleri",
+        "Anlık bildirim (Web Push ve FCM) ve Android ana ekran widget'ı"
       ]
     },
     {
