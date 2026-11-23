@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { portfolioData } from '../data';
-import { ArrowLeft, Github, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Github, ExternalLink, CheckCircle2, Download } from 'lucide-react';
 import ProjectCover from '../components/ProjectCover';
 
 const ProjectDetail: React.FC = () => {
@@ -60,6 +60,17 @@ const ProjectDetail: React.FC = () => {
               </a>
              )}
           </div>
+          {project.downloadUrl && (
+            <a
+              href={project.downloadUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="w-full bg-primary hover:bg-indigo-600 text-white py-3 px-4 rounded-xl flex items-center justify-center gap-2 font-medium transition-all shadow-lg shadow-indigo-500/20"
+            >
+              <Download size={20} aria-hidden="true" />
+              Telefona İndir (Android ve iPhone)
+            </a>
+          )}
         </div>
 
         {/* Right Column: Content */}

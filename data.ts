@@ -140,6 +140,7 @@ export const portfolioData: ProfileData = {
       imageUrl: "/projects/biz-ikimiz.png",
       githubUrl: "https://github.com/rose-omer/bizim-oyunlar",
       liveUrl: "https://rose-omer.github.io/bizim-oyunlar/",
+      downloadUrl: "https://rose-omer.github.io/bizim-oyunlar/indir/",
       category: "Web",
       features: [
         "Fotoğraflı ve sesli mesajlaşma, tepki, görüldü bilgisi",

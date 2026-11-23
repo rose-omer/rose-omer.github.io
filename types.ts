@@ -7,6 +7,7 @@ export interface Project {
   imageUrl?: string;
   githubUrl?: string;
   liveUrl?: string;
+  downloadUrl?: string; // telefona kurulum sayfası
   category: string;
   features: string[];
 }

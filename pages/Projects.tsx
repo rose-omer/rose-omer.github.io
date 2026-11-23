@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { portfolioData } from '../data';
 import { Link } from 'react-router-dom';
-import { Github, ExternalLink } from 'lucide-react';
+import { Github, ExternalLink, Download } from 'lucide-react';
 import ProjectCover from '../components/ProjectCover';
 
 const ALL = 'Tümü';
@@ -77,6 +77,11 @@ const Projects: React.FC = () => {
                   {project.liveUrl && (
                     <a href={project.liveUrl} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition-colors" aria-label={`${project.title} canlı demo`}>
                       <ExternalLink size={20} aria-hidden="true" />
+                    </a>
+                  )}
+                  {project.downloadUrl && (
+                    <a href={project.downloadUrl} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition-colors" aria-label={`${project.title} telefona indir`}>
+                      <Download size={20} aria-hidden="true" />
                     </a>
                   )}
                 </div>
